@@ -1,0 +1,15 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://username:password@localhost:27017/yourdatabase
+      database: yourdatabase
+
+  # If you're using MongoDB Atlas, your URI might look like this:
+  # uri: mongodb+srv://username:password@cluster0.mongodb.net/yourdatabase?retryWrites=true&w=majority
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
