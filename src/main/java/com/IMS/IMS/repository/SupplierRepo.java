@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.awt.*;
 import java.util.Optional;
 
-public interface SupplierRepo extends MongoRepository <Supplier, Integer> {
+public interface SupplierRepo extends MongoRepository <Supplier,String> {
 
 }

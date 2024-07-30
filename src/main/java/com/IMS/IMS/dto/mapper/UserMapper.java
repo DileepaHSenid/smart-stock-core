@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
     public UserResponse toUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
-        userResponse.setUsername(userResponse.getUsername());
+        userResponse.setUsername(user.getUsername());
         userResponse.setRole(user.getRole());
         return userResponse;
     }
@@ -17,7 +17,7 @@ public class UserMapper {
         User user = new User();
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
-        user.setRole(userRequest.getRole());
+//        user.setRole(userRequest.getRole());
         return user;
 }
 }
