@@ -13,11 +13,11 @@ public class UserMapper {
         userResponse.setRole(user.getRole());
         return userResponse;
     }
-    public UserRequest toUserRequest(UserRequest userRequest) {
+    public User toUserRequest(UserRequest userRequest) {
         User user = new User();
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
         user.setRole(userRequest.getRole());
-        return userRequest;
-    }
+        return user;
+}
 }
