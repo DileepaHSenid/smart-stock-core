@@ -1,10 +1,9 @@
-package com.hsenid.smartstock.entity;
+package com.hsenid.smartstock.dto.request;
 
 import lombok.Data;
 
 @Data
-public class Product {
-    private String id;
+public class ProductRequest {
     private String name;
     private String Status;
     private String ShippingId;
