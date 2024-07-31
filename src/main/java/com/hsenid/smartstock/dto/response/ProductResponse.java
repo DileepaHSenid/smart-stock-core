@@ -10,6 +10,6 @@ public class ProductResponse {
     private String description;
     private double price;
     private int stockQuantity;
-    private String category;
+    private String categoryId;
     private String supplierId;
 }

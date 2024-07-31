@@ -2,18 +2,22 @@ package com.hsenid.smartstock.dto.mapper;
 
 
 import com.hsenid.smartstock.dto.request.ProductRequest;
+import com.hsenid.smartstock.dto.response.ProductResponse;
 import com.hsenid.smartstock.entity.Product;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
-    public ProductRequest toProductResponse(Product product) {
-        ProductRequest response = new ProductRequest();
+    public ProductResponse toProductResponse(Product product) {
+        ProductResponse response = new ProductResponse();
+
         response.setName(product.getName());
         response.setStatus(product.getStatus());
         response.setShippingId(product.getShippingId());
         response.setDescription(product.getDescription());
         response.setPrice(product.getPrice());
         response.setStockQuantity(product.getStockQuantity());
-        response.setCategory(product.getCategory());
+        response.setCategoryId(product.getCategoryId());
         response.setSupplierId(product.getSupplierId());
         return response;
     }
@@ -26,7 +30,7 @@ public class ProductMapper {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStockQuantity(productRequest.getStockQuantity());
-        product.setCategory(productRequest.getCategory());
+        product.setCategoryId(productRequest.getCategoryId());
         product.setSupplierId(productRequest.getSupplierId());
         return product;
     }
