@@ -13,8 +13,10 @@ public class SupplierService {
     private SupplierRepo supplierRepo;
 
     public List<Supplier> getAllSuppliers() {
+
         return supplierRepo.findAll();
     }
+
     public Supplier createSupplier(Supplier supplier) {
         return supplierRepo.save(supplier);
     }

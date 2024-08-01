@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("/suppliers")
 public class SupplierController {
    @Autowired
    private SupplierService supplierService;
@@ -23,7 +23,7 @@ public class SupplierController {
    private SupplierMapper supplierMapper;
 
 
-   @GetMapping("/suppliers")
+   @GetMapping
    public List<SupplierResponse> getAllSuppliers() {
       return supplierService.getAllSuppliers()
               .stream()

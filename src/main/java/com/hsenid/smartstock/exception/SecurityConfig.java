@@ -1,10 +1,12 @@
 package com.hsenid.smartstock.exception;
 
+import com.hsenid.smartstock.entity.UserRole;
 import com.hsenid.smartstock.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,8 +39,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/home", "/signin", "/signup","/orders","/stocks","/stocks/{id}").permitAll()    // all can access
                         // Require authentication for any other request
+
 //                        .requestMatchers("/orders").hasAuthority("ADMIN")
 //                        .requestMatchers("").hasAuthority("MAINTAINER")
+
+                        .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
