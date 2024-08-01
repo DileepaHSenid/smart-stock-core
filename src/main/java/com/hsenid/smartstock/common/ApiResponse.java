@@ -1,9 +1,11 @@
 package com.hsenid.smartstock.common;
 
+import lombok.Data;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
+@Data
 public class ApiResponse {
     private StatusCode status;
     private String message;

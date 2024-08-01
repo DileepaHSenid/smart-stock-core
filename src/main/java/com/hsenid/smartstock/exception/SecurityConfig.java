@@ -37,7 +37,7 @@ public class SecurityConfig {
         // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup","/orders","/stocks","/stocks/{id}").permitAll()    // all can access
+                        .requestMatchers("/home", "/signin", "/signup","/orders","/stocks","/stocks/{id}","/users").permitAll()    // all can access
                         // Require authentication for any other request
 
 //                        .requestMatchers("/orders").hasAuthority("ADMIN")
