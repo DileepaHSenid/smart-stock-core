@@ -1,5 +1,7 @@
 package com.hsenid.smartstock.controller;
 
+import com.hsenid.smartstock.common.ApiResponse;
+import com.hsenid.smartstock.common.StatusCode;
 import com.hsenid.smartstock.dto.mapper.SupplierMapper;
 import com.hsenid.smartstock.dto.request.SupplierRequest;
 import com.hsenid.smartstock.dto.response.SupplierResponse;
@@ -13,31 +15,51 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RestController
 @RequestMapping("/suppliers")
 public class SupplierController {
    @Autowired
    private SupplierService supplierService;
+
    @Autowired
    private SupplierMapper supplierMapper;
 
-
    @GetMapping
-   public List<SupplierResponse> getAllSuppliers() {
-      return supplierService.getAllSuppliers()
-              .stream()
-              .map(supplierMapper::toSupplierResponse)
-              .collect(Collectors.toList());
+   public ResponseEntity<ApiResponse> getAllSuppliers() {
+      try {
+         List<SupplierResponse> suppliers = supplierService.getAllSuppliers()
+                 .stream()
+                 .map(supplierMapper::toSupplierResponse)
+                 .collect(Collectors.toList());
+
+         return ResponseEntity.ok(
+                 ApiResponse.forStatus(StatusCode.S0000)
+                         .withMessage(StatusCode.S0000.getMessage())
+                         .withPayload(suppliers)
+         );
+      } catch (Exception e) {
+         return ResponseEntity.ok(
+                 ApiResponse.forStatus(StatusCode.E5000)
+                         .withMessage(StatusCode.E5000.getMessage())
+         );
+      }
    }
 
+   @PostMapping("/createSupplier")
+   public ResponseEntity<ApiResponse> createSupplier(@RequestBody SupplierRequest supplierRequest) {
+      try {
+         Supplier supplier = supplierMapper.toSupplierRequest(supplierRequest);
+         Supplier createdSupplier = supplierService.createSupplier(supplier);
+         SupplierResponse supplierResponse = supplierMapper.toSupplierResponse(createdSupplier);
 
-   @PostMapping("/CreateSupplier")
-   public ResponseEntity<SupplierResponse> createSupplier(@RequestBody SupplierRequest supplierRequest) {
-      Supplier supplier = supplierMapper.toSupplierRequest(supplierRequest);
-      Supplier createdSupplier = supplierService.createSupplier(supplier);
-      SupplierResponse supplierResponse = supplierMapper.toSupplierResponse(createdSupplier);
-      return new ResponseEntity<>(supplierResponse, HttpStatus.CREATED);
+         return ResponseEntity.status(HttpStatus.CREATED)
+                 .body(ApiResponse.forStatus(StatusCode.S0000)
+                         .withMessage(StatusCode.S0000.getMessage())
+                         .withPayload(supplierResponse));
+      } catch (Exception e) {
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                 .body(ApiResponse.forStatus(StatusCode.E5000)
+                         .withMessage(StatusCode.E5000.getMessage()));
+      }
    }
-
 }

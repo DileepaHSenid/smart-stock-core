@@ -1,5 +1,7 @@
 package com.hsenid.smartstock.controller;
 
+import com.hsenid.smartstock.common.ApiResponse;
+import com.hsenid.smartstock.common.StatusCode;
 import com.hsenid.smartstock.dto.mapper.UserMapper;
 import com.hsenid.smartstock.dto.request.UserRequest;
 import com.hsenid.smartstock.dto.response.UserResponse;
@@ -21,24 +23,47 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
-    private UserDetailService userdetailService;
+    private UserDetailService userDetailService;
 
     @Autowired
     private UserMapper userMapper;
 
-    @GetMapping("/Users")
-    public List<UserResponse> getAllUsers() {
-        return userdetailService.getAllUsers()
-                .stream()
-                .map(userMapper::toUserResponse)
-                .collect(Collectors.toList());
+    @GetMapping("/users")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        try {
+            List<UserResponse> users = userDetailService.getAllUsers()
+                    .stream()
+                    .map(userMapper::toUserResponse)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage(StatusCode.S0000.getMessage())
+                            .withPayload(users)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage(StatusCode.E5000.getMessage())
+            );
+        }
     }
 
-    @PostMapping("/CreateUser")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest) {
-        User user = userMapper.toUserRequest(userRequest);
-        User createdUser = userdetailService.createUser(user);
-        UserResponse userResponse = userMapper.toUserResponse(createdUser);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
+    @PostMapping("/createUser")
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserRequest userRequest) {
+        try {
+            User user = userMapper.toUserRequest(userRequest);
+            User createdUser = userDetailService.createUser(user);
+            UserResponse userResponse = userMapper.toUserResponse(createdUser);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage(StatusCode.S0000.getMessage())
+                            .withPayload(userResponse));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage(StatusCode.E5000.getMessage()));
+        }
     }
 }

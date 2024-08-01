@@ -37,12 +37,17 @@ public class SecurityConfig {
         // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup").permitAll()    // all can access
+                        .requestMatchers("/home", "/signin", "/signup","/orders","/stocks","/stocks/{id}","/users").permitAll()    // all can access
                         // Require authentication for any other request
+
+//                        .requestMatchers("/orders").hasAuthority("ADMIN")
+//                        .requestMatchers("").hasAuthority("MAINTAINER")
+
                         .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
                         .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -73,5 +78,3 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
-
-
