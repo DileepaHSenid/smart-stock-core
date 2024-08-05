@@ -45,7 +45,7 @@ public class SupplierController {
       }
    }
 
-   @PostMapping("/createSupplier")
+   @PostMapping//("/createsupplier")
    public ResponseEntity<ApiResponse> createSupplier(@RequestBody SupplierRequest supplierRequest) {
       try {
          Supplier supplier = supplierMapper.toSupplierRequest(supplierRequest);
