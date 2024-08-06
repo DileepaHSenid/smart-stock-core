@@ -62,4 +62,16 @@ public class SupplierController {
                          .withMessage(StatusCode.E5000.getMessage()));
       }
    }
+
+   @DeleteMapping("/{id}")
+   public ResponseEntity<ApiResponse> deleteSupplier(@PathVariable String id) {
+      try {
+         supplierService.deleteSupplier(id);
+         return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.S0000)
+                 .withMessage("Stock deleted successfully"));
+      } catch (Exception e) {
+         return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E5000)
+                 .withMessage(e.getMessage()));
+      }
+   }
 }
