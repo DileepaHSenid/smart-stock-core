@@ -37,21 +37,17 @@ public class SecurityConfig {
         // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup","/orders","/stocks","/stocks/{id}","/users","/suppliers","/suppliers/createsupplier/","/suppliers/{id}").permitAll()    // all can access
-                        // Require authentication for any other request
-
+                        .requestMatchers("/home", "/signin", "/signup","/orders/**","/stocks/**","/users/**","/suppliers/**", "/products/**","/categories/**").permitAll()
 //                        .requestMatchers("/orders").hasAuthority("ADMIN")
 //                        .requestMatchers("").hasAuthority("MAINTAINER")
-
 //                        .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
-                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
-                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers("/suppliers/{id}").hasAuthority(UserRole.ADMIN.name())
+//                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
+//                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
 //                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
 
                         .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         log.info("Security filter chain configured successfully");
