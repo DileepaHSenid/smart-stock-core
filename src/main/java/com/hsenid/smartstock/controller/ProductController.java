@@ -47,5 +47,21 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< Updated upstream
 
+=======
+    @PostMapping("/create/{categoryId}")
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @PathVariable String categoryId) {
+        try {
+            Product product = productMapper.toProduct(productRequest);
+            product.setCategoryId(categoryId);
+            Product createdProduct = productService.createProduct(product);
+            ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
+            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace(); // This will log the full stack trace
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+>>>>>>> Stashed changes
 }

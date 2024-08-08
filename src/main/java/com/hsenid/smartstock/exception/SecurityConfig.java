@@ -34,23 +34,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring security filter chain");
 
-        // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup").permitAll()    // all can access
-                        // Require authentication for any other request
+                        .requestMatchers("/home", "/signin", "/signup").permitAll()
                         .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
-                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+                        .requestMatchers("/products/create/**").hasAuthority(UserRole.ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         log.info("Security filter chain configured successfully");
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
