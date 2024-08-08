@@ -15,13 +15,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping
 public class ProductController {
     @Autowired
     private ProductService productService;
     @Autowired
     private ProductMapper productMapper;
-
+    @PostMapping("/create")
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @RequestParam(required = false) String categoryId) {
+        try {
+            Product product = productMapper.toProductRequest(productRequest);
+            Product createdProduct = productService.createProduct(product, categoryId);
+            ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
+            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
         Optional<Product> productOpt = productService.getProductById(id);
@@ -36,15 +47,5 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @RequestParam String categoryId) {
-        try {
-            Product product = productMapper.toProductRequest(productRequest);
-            Product createdProduct = productService.createProduct(product, categoryId);
-            ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+
 }
