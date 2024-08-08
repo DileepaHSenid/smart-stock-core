@@ -1,7 +1,5 @@
 package com.hsenid.smartstock.dto.request;
 
-import lombok.Data;
-
 public record StockRequest (
         String productId,
         int quantity,

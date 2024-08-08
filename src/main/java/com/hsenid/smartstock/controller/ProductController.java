@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
@@ -25,18 +25,7 @@ public class ProductController {
 
     @Autowired
     private ProductMapper productMapper;
-    @PostMapping("/create")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @RequestParam(required = false) String categoryId) {
-        try {
-            Product product = productMapper.toProductRequest(productRequest);
-            Product createdProduct = productService.createProduct(product, categoryId);
-            ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
-    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable String id) {
         try {
@@ -83,24 +72,12 @@ public class ProductController {
         }
     }
 
-
-    @PostMapping("/create/{categoryId}")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest, @PathVariable String categoryId) {
-
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody ProductRequest productRequest, @RequestParam String categoryId) {
-
         try {
-            Product product = productMapper.toProduct(productRequest);
-            product.setCategoryId(categoryId);
-            Product createdProduct = productService.createProduct(product);
+            Product product = productMapper.toProductRequest(productRequest);
+            Product createdProduct = productService.createProduct(product, categoryId);
             ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
-
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace(); // This will log the full stack trace
-            return ResponseEntity.badRequest().body(null);
-
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.forStatus(StatusCode.S0000)
                             .withMessage(StatusCode.S0000.getMessage())
@@ -115,6 +92,6 @@ public class ProductController {
                     ApiResponse.forStatus(StatusCode.E5000)
                             .withMessage(StatusCode.E5000.getMessage())
             );
-
         }
     }
+}
