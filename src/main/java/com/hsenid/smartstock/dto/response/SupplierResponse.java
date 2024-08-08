@@ -1,7 +1,6 @@
 package com.hsenid.smartstock.dto.response;
 
 import lombok.Data;
-import org.bson.types.ObjectId;
 
 @Data
 public class SupplierResponse {
