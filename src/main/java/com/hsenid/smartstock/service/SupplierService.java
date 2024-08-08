@@ -20,4 +20,9 @@ public class SupplierService {
     public Supplier createSupplier(Supplier supplier) {
         return supplierRepo.save(supplier);
     }
+
+    public void deleteSupplier(String id) {
+        supplierRepo.deleteById(id);
+    }
+
 }

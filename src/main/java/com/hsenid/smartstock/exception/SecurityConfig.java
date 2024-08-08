@@ -34,21 +34,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring security filter chain");
 
+        // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup").permitAll()
-                        .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
-                        .requestMatchers("/products/create/**").hasAuthority(UserRole.ADMIN.name())
+                        .requestMatchers("/home", "/signin", "/signup","/orders/**","/stocks/**","/users/**","/suppliers/**", "/products/**","/categories/**").permitAll()
+//                        .requestMatchers("/orders").hasAuthority("ADMIN")
+//                        .requestMatchers("").hasAuthority("MAINTAINER")
+//                        .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
+//                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
+//                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
+//                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+
                         .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         log.info("Security filter chain configured successfully");
         return http.build();
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
@@ -71,5 +75,3 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
-
-

@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class SupplierRequest {
-    private String supplierFirstName;
-    private String supplierLastName;
+    private String FirstName;
+    private String LastName;
     private String contactPerson;
     private String email;
     private String phone;

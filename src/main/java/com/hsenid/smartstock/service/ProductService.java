@@ -34,7 +34,4 @@ public class ProductService {
     public Optional<Product> getProductById(String id) {
         return productRepo.findById(id);
     }
-
-
-
 }
