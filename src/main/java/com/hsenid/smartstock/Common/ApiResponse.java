@@ -1,31 +1,34 @@
-package com.hsenid.smartstock.dto;
+package com.hsenid.smartstock.common;
 
-import com.hsenid.smartstock.Common.StatusCode;
 import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.NonNull;
+
+import java.time.LocalDateTime;
 
 @Data
-@Accessors(chain = true)
-public class ApiResponse<T> {
-    private String code;
-    private String status;
+public class ApiResponse {
+    private StatusCode status;
     private String message;
-    private T payload;
+    private LocalDateTime timestamp;
+    private Object payload;
 
-    public static <T> ApiResponse<T> forStatus(StatusCode statusCode) {
-        return new ApiResponse<T>()
-                .setCode(statusCode.getCode())
-                .setStatus(statusCode.getTitle())
-                .setMessage(statusCode.getMessage());
+    private ApiResponse() {
+        timestamp = LocalDateTime.now();
     }
 
-    public ApiResponse<T> withPayload(T payload) {
-        this.payload = payload;
+    public static ApiResponse forStatus(@NonNull StatusCode status) {
+        ApiResponse response = new ApiResponse();
+        response.status = status;
+        return response;
+    }
+
+    public ApiResponse withMessage(String message, String... params) {
+        this.message = String.format(message, params);
         return this;
     }
 
-    public ApiResponse<T> withMessage(String message) {
-        this.message = message;
+    public ApiResponse withPayload(Object payload) {
+        this.payload = payload;
         return this;
     }
 }
