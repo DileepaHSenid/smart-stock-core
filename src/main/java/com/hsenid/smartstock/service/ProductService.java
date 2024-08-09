@@ -27,10 +27,9 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    public Product createProduct(Product product, String categoryId) {
-        Optional<Category> categoryOpt = categoryRepo.findById(categoryId);
+    public Product createProduct(Product product) {
+        Optional<Category> categoryOpt = categoryRepo.findById(product.getCategoryId());
         if (categoryOpt.isPresent()) {
-            product.setCategoryId(categoryId);
             return productRepo.save(product);
         }
         throw new RuntimeException("Category not found");
