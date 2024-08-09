@@ -11,10 +11,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "categories")
-public class Category {
+@Document(collection = "subcategories")
+public class SubCategory {
     @Id
     private String id;
     private String name;
-    private List<SubCategory> subCategories; // Contains the first level of subcategories
+    private List<SubCategory> subCategories; // Allows for further nesting
 }
