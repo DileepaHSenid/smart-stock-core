@@ -28,12 +28,11 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
-        Optional<Category> categoryOpt = categoryRepo.findById(product.getCategoryId());
-        if (categoryOpt.isPresent()) {
+
             return productRepo.save(product);
         }
-        throw new RuntimeException("Category not found");
-    }
+
+
 
     public Optional<Product> getProductById(String id) {
         return productRepo.findById(id);
