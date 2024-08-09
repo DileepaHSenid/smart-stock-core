@@ -9,10 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Supplier {
     @Id
     private String id; //Generating Auto
-    private String FirstName;
-    private String LastName;
+    private String img;
+    private String firstName;
+    private String lastName;
     private String contactPerson;
     private String email;
     private String phone;
     private String address;
+
 }

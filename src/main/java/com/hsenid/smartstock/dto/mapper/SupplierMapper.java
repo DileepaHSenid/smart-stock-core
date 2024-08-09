@@ -11,6 +11,7 @@ public class SupplierMapper {
     public SupplierResponse toSupplierResponse(Supplier supplier) {
         SupplierResponse response = new SupplierResponse();
         response.setId(supplier.getId());
+        response.setImg(supplier.getImg());
         response.setFirstName(supplier.getFirstName());
         response.setLastName(supplier.getLastName());
         response.setContactPerson(supplier.getContactPerson());
@@ -21,6 +22,7 @@ public class SupplierMapper {
     }
     public Supplier toSupplierRequest(SupplierRequest supplierRequest) {
         Supplier supplier = new Supplier();
+        supplier.setImg(supplierRequest.getImg());
         supplier.setFirstName(supplierRequest.getFirstName());
         supplier.setLastName(supplierRequest.getLastName());
         supplier.setContactPerson(supplierRequest.getContactPerson());
