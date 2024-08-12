@@ -16,14 +16,42 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
+//    public ResponseEntity<ApiResponse> signUp(@RequestBody ReqResDto signUpRequest) {
+//        try {
+//            ReqResDto responseDto = authService.signUp(signUpRequest);
+//            return ResponseEntity.ok(
+//                    ApiResponse.forStatus(StatusCode.S0000)
+//                            .withMessage(StatusCode.S0000.getMessage())
+//                            .withPayload(responseDto)
+//            );
+//        } catch (Exception e) {
+//            return ResponseEntity.ok(
+//                    ApiResponse.forStatus(StatusCode.E5000)
+//                            .withMessage(StatusCode.E5000.getMessage())
+//            );
+//        }
+//    }
+
     public ResponseEntity<ApiResponse> signUp(@RequestBody ReqResDto signUpRequest) {
         try {
             ReqResDto responseDto = authService.signUp(signUpRequest);
-            return ResponseEntity.ok(
-                    ApiResponse.forStatus(StatusCode.S0000)
-                            .withMessage(StatusCode.S0000.getMessage())
-                            .withPayload(responseDto)
-            );
+            if (responseDto.getStatusCode() == 200) {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.S0000)
+                                .withMessage(responseDto.getMessage())
+                                .withPayload(responseDto)
+                );
+            } else if (responseDto.getStatusCode() == 400) {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.E4009)
+                                .withMessage(responseDto.getMessage())
+                );
+            } else {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.E5000)
+                                .withMessage(responseDto.getMessage())
+                );
+            }
         } catch (Exception e) {
             return ResponseEntity.ok(
                     ApiResponse.forStatus(StatusCode.E5000)

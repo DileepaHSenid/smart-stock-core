@@ -1,13 +1,10 @@
 package com.hsenid.smartstock.dto.request;
 
-import lombok.Data;
-
-@Data
-public class SupplierRequest {
-    private String FirstName;
-    private String LastName;
-    private String contactPerson;
-    private String email;
-    private String phone;
-    private String address;
-}
+public record SupplierRequest (
+        String FirstName,
+        String LastName,
+        String contactPerson,
+        String email,
+        String phone,
+        String address
+){}

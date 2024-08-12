@@ -21,7 +21,6 @@ public class ProductService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-
     public List<Product> getAllProducts() {
 
         return productRepo.findAll();

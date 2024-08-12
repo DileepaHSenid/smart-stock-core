@@ -142,6 +142,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -158,10 +159,20 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE
+    );
+
     // Handles user registration
     public ReqResDto signUp(ReqResDto registrationRequest) {
         ReqResDto reqResDto = new ReqResDto();
         try {
+            if (!isValidEmail(registrationRequest.getUsername())) {
+                reqResDto.setStatusCode(400);
+                reqResDto.setMessage("Invalid email format");
+                return reqResDto;
+            }
+
             // Check if the email is already registered
             if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
                 reqResDto.setStatusCode(400);
@@ -201,6 +212,12 @@ public class AuthService {
         try {
             String email = signInRequest.getUsername();
             String password = signInRequest.getPassword();
+
+            if (!isValidEmail(email)) {
+                reqResDto.setStatusCode(400);
+                reqResDto.setError("Invalid email format");
+                return reqResDto;
+            }
 
             // Check if the user exists in the database
             Optional<User> userOptional = userRepository.findByUsername(email);
@@ -264,6 +281,10 @@ public class AuthService {
             reqResDto.setError("Error during token refresh: " + e.getMessage());
         }
         return reqResDto;
+    }
+
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).find();
     }
 }
 

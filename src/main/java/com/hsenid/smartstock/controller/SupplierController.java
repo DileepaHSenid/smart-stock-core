@@ -3,7 +3,9 @@ package com.hsenid.smartstock.controller;
 import com.hsenid.smartstock.common.ApiResponse;
 import com.hsenid.smartstock.common.StatusCode;
 import com.hsenid.smartstock.dto.mapper.SupplierMapper;
+import com.hsenid.smartstock.dto.request.StockRequest;
 import com.hsenid.smartstock.dto.request.SupplierRequest;
+import com.hsenid.smartstock.dto.response.StockResponse;
 import com.hsenid.smartstock.dto.response.SupplierResponse;
 import com.hsenid.smartstock.entity.Supplier;
 import com.hsenid.smartstock.service.SupplierService;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,7 +71,23 @@ public class SupplierController {
       try {
          supplierService.deleteSupplier(id);
          return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.S0000)
-                 .withMessage("Stock deleted successfully"));
+                 .withMessage("Supplier deleted successfully"));
+      } catch (Exception e) {
+         return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E5000)
+                 .withMessage(e.getMessage()));
+      }
+   }
+
+   @PutMapping("/{id}")
+   public ResponseEntity<ApiResponse> updateSupplier(@PathVariable String id, @RequestBody SupplierRequest supplierRequest) {
+      try {
+         Optional<SupplierResponse> updatedSupplier = supplierService.updateSupplier(id, supplierRequest);
+         return updatedSupplier
+                 .map(stock -> ResponseEntity.ok(ApiResponse.forStatus(StatusCode.S0000)
+                         .withMessage(StatusCode.S0000.getMessage())
+                         .withPayload(stock)))
+                 .orElseGet(() -> ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E4004)
+                         .withMessage(StatusCode.E4004.getMessage())));
       } catch (Exception e) {
          return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E5000)
                  .withMessage(e.getMessage()));
