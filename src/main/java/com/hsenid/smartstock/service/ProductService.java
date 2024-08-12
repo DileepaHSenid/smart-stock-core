@@ -32,7 +32,13 @@ public class ProductService {
             return productRepo.save(product);
         }
 
-
+    public boolean deleteProduct(String productId) {
+        if (productRepo.existsById(productId)) {
+            productRepo.deleteById(productId);
+            return true;
+        }
+        return false;
+    }
 
     public Optional<Product> getProductById(String id) {
         return productRepo.findById(id);

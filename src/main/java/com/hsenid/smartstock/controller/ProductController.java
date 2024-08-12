@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
     @Autowired
@@ -91,6 +92,30 @@ public class ProductController {
             return ResponseEntity.ok(
                     ApiResponse.forStatus(StatusCode.E5000)
                             .withMessage(StatusCode.E5000.getMessage())
+            );
+        }
+    }
+
+    // Delete Product by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String id) {
+        try {
+            boolean isRemoved = productService.deleteProduct(id);
+            if (isRemoved) {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.S0000)
+                                .withMessage("Product deleted successfully")
+                );
+            } else {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.E4004)
+                                .withMessage("Product not found")
+                );
+            }
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while deleting the product")
             );
         }
     }

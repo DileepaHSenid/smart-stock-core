@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +39,7 @@ public class SecurityConfig {
 
         // Configure HTTP security
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(withDefaults()) // Enable CORS with default settings
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/home", "/signin", "/signup","/orders/**","/stocks/**","/users/**","/suppliers/**", "/products/**","/categories/**").permitAll()
 //                        .requestMatchers("/orders").hasAuthority("ADMIN")
@@ -71,5 +77,19 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         // Get the authentication manager from the authentication configuration
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    // CORS configuration
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("http://localhost:4200"); // Allow your frontend's origin
+        corsConfiguration.addAllowedHeader("*"); // Allow all headers
+        corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(source);
     }
 }
