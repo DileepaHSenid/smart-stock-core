@@ -185,7 +185,6 @@ public class AuthService {
             user.setUsername(registrationRequest.getUsername());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             user.setRole(registrationRequest.getRole());
-
             // Save the user to the database
             User savedUser = userRepository.save(user);
 
