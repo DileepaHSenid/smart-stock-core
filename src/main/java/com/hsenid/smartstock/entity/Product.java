@@ -11,8 +11,8 @@ import java.util.Date;
 @Data
 public class Product {
     @Id
-    private String img;
     private String id;
+    private String img;
     private String name;
     private String Status;
     private String ShippingId;
@@ -24,5 +24,6 @@ public class Product {
     private String categoryId;
     private String supplierFirstName;
     private String supplierLastName;
+    private String supplierID;
 
 }
