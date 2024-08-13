@@ -73,10 +73,10 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createProduct(@RequestBody ProductRequest productRequest, @RequestParam String categoryId) {
+    public ResponseEntity<ApiResponse> createProduct(@RequestBody ProductRequest productRequest) {
         try {
             Product product = productMapper.toProductRequest(productRequest);
-            Product createdProduct = productService.createProduct(product, categoryId);
+            Product createdProduct = productService.createProduct(product);
             ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.forStatus(StatusCode.S0000)
