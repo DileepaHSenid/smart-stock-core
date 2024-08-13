@@ -22,6 +22,7 @@ public class ProductMapper {
         response.setCategoryId(product.getCategoryId());
         response.setSupplierFirstName(product.getSupplierFirstName());
         response.setSupplierLastName(product.getSupplierLastName());
+        response.setShippingId(product.getSupplierID());
         return response;
     }
 
@@ -39,6 +40,7 @@ public class ProductMapper {
         product.setSupplierFirstName(productRequest.getSupplierFirstName());
         product.setSupplierLastName(productRequest.getSupplierLastName());
         product.setLastOrderedDate(productRequest.getLastOrderedDate());
+        product.setSupplierID(productRequest.getSupplierID());
         return product;
     }
 }

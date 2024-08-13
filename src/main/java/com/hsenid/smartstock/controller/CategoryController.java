@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +21,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // Endpoint to add a new main category
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<ApiResponse> addCategory(@RequestBody Category category) {
         try {
             Category createdCategory = categoryService.addCategory(category);
@@ -110,4 +111,25 @@ public class CategoryController {
             );
         }
     }
+
+    // Endpoint to get all categories
+    @GetMapping
+    public ResponseEntity<ApiResponse> getAllCategories() {
+        try {
+            List<Category> categories = categoryService.getAllCategories();
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage(StatusCode.S0000.getMessage())
+                            .withPayload(categories)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage(StatusCode.E5000.getMessage())
+            );
+        }
+    }
 }
+
+
+

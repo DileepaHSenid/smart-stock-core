@@ -19,5 +19,6 @@ public class ProductResponse {
     private String categoryId;
     private String supplierFirstName;
     private String supplierLastName;
+    private String supplierID;
 
 }

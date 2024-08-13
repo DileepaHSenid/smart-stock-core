@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
 
@@ -48,6 +50,7 @@ public class CategoryService {
         // If no parent found, return null or throw an exception
         return null;
     }
+
     // Fetch a category by its ID
     public Optional<Category> getCategoryById(String id) {
         return categoryRepo.findById(id);
@@ -57,7 +60,9 @@ public class CategoryService {
     public Optional<SubCategory> getSubCategoryById(String id) {
         return subCategoryRepo.findById(id);
     }
+
+    // Fetch all categories
+    public List<Category> getAllCategories() {
+        return categoryRepo.findAll();
+    }
 }
-
-
-
