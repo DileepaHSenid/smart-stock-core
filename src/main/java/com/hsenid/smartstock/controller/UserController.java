@@ -13,10 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-//@RequestMapping("/api/users")
+@RequestMapping("/users")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
@@ -26,7 +27,7 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
-    @GetMapping("/users")
+    @GetMapping("")
     public ResponseEntity<ApiResponse> getAllUsers() {
         try {
             List<UserResponse> users = userDetailService.getAllUsers()
@@ -62,6 +63,49 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.forStatus(StatusCode.E5000)
                             .withMessage(StatusCode.E5000.getMessage()));
+        }
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable String id) {
+        try {
+            userDetailService.deleteUser(id);
+            return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.S0000)
+                    .withMessage("user deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E5000)
+                    .withMessage(e.getMessage()));
+        }
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
+        try {
+            Optional<User> existingUserOpt =userDetailService.getUserById(id);
+            if (existingUserOpt.isPresent()) {
+                User existingUser= existingUserOpt.get();
+                userMapper.updateUser(userRequest, existingUser);
+                User updatedUser = userDetailService.updateUser(existingUser);
+                UserResponse userResponse = userMapper.toUserResponse(updatedUser);
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.S0000)
+                                .withMessage("User updated successfully")
+                                .withPayload(userResponse)
+                );
+            } else {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.E4004)
+                                .withMessage("User not found")
+                );
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E4001)
+                            .withMessage(StatusCode.E4001.getMessage())
+            );
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while updating the User")
+            );
         }
     }
 }

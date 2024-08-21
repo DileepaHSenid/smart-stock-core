@@ -19,6 +19,7 @@ public class User implements UserDetails {
     @Id
     @Generated
     private String id;
+    private String img;
     private String username;
     private String password;
     private String firstName;
@@ -50,4 +51,7 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
+    public String getUserId() {
+        return this.id;
+    }
 }

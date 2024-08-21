@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/products")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;
@@ -96,8 +98,7 @@ public class ProductController {
         }
     }
 
-    // Delete Product by ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String id) {
         try {
             boolean isRemoved = productService.deleteProduct(id);
@@ -119,4 +120,134 @@ public class ProductController {
             );
         }
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable String id, @RequestBody ProductRequest productRequest) {
+        try {
+            Optional<Product> existingProductOpt = productService.getProductById(id);
+            if (existingProductOpt.isPresent()) {
+                Product existingProduct = existingProductOpt.get();
+                productMapper.updateProductFromRequest(productRequest, existingProduct);
+                Product updatedProduct = productService.updateProduct(existingProduct);
+                ProductResponse productResponse = productMapper.toProductResponse(updatedProduct);
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.S0000)
+                                .withMessage("Product updated successfully")
+                                .withPayload(productResponse)
+                );
+            } else {
+                return ResponseEntity.ok(
+                        ApiResponse.forStatus(StatusCode.E4004)
+                                .withMessage("Product not found")
+                );
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E4001)
+                            .withMessage(StatusCode.E4001.getMessage())
+            );
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while updating the product")
+            );
+        }
+    }
+
+    @GetMapping("/out-of-stock/count")
+    public ResponseEntity<ApiResponse> getOutOfStockProductCount() {
+        try {
+            long count = productService.getOutOfStockProductCount();
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Out of stock product count retrieved successfully")
+                            .withPayload(count)
+            );
+        } catch (Exception e) {
+            logger.error("Error in getOutOfStockProductCount", e);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while retrieving out of stock product count: ".concat(e.getMessage()))
+            );
+        }
+    }
+
+    @GetMapping("/onDelivery/count")
+    public ResponseEntity<ApiResponse> getOnDeliveryCount() {
+        try {
+            long count = productService.onDelivery();
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Out of stock product count retrieved successfully")
+                            .withPayload(count)
+            );
+        } catch (Exception e) {
+            logger.error("Error in getOutOfStockProductCount", e);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while retrieving out of stock product count: " + e.getMessage())
+            );
+        }
+    }
+
+    @GetMapping("/low-in-stock/count")
+    public ResponseEntity<ApiResponse> getLowInStockProductCount() {
+        try {
+            long count = productService.getLowInStockProductCount();
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Low in stock product count retrieved successfully")
+                            .withPayload(count)
+            );
+        } catch (Exception e) {
+            logger.error("Error in getLowInStockProductCount", e);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while retrieving low in stock product count: " + e.getMessage())
+            );
+        }
+    }
+
+    @GetMapping("/low-in-stock")
+    public ResponseEntity<ApiResponse> getLowStockProducts() {
+        try {
+            List<ProductResponse> lowInStockProducts = productService.getLowInStockProducts()
+                    .stream()
+                    .map(productMapper::toProductResponse)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Low in stock products retrieved successfully")
+                            .withPayload(lowInStockProducts)
+            );
+        } catch (Exception e) {
+            logger.error("Error in getLowStockProducts", e);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while retrieving low in stock products" + e.getMessage())
+            );
+        }
+    }
+    @GetMapping("/on-delivery")
+    public ResponseEntity<ApiResponse> getOnDeliveryProducts() {
+        try {
+            List<Product> onDeliveryProducts = productService.onDeliveryProducts();
+            List<ProductResponse> productResponses = onDeliveryProducts.stream()
+                    .map(productMapper::toProductResponse)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Products on delivery retrieved successfully")
+                            .withPayload(productResponses)
+            );
+        } catch (Exception e) {
+            logger.error("Error retrieving products on delivery", e);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E5000)
+                            .withMessage("An error occurred while retrieving products on delivery: " + e.getMessage())
+            );
+        }
+    }
+
 }

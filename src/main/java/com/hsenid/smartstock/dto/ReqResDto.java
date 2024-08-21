@@ -24,4 +24,5 @@ public class ReqResDto {
     private UserRoles role;
     private String password;
     private User user;
+    
 }
