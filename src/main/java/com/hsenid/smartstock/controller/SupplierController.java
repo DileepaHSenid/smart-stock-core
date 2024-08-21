@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,7 +65,7 @@ public class SupplierController {
       }
    }
 
-   @DeleteMapping("/{id}")
+   @DeleteMapping("delete/{id}")
    public ResponseEntity<ApiResponse> deleteSupplier(@PathVariable String id) {
       try {
          supplierService.deleteSupplier(id);
@@ -73,6 +74,38 @@ public class SupplierController {
       } catch (Exception e) {
          return ResponseEntity.ok(ApiResponse.forStatus(StatusCode.E5000)
                  .withMessage(e.getMessage()));
+      }
+   }
+   @PutMapping("/update/{id}")
+   public ResponseEntity<ApiResponse> updateSupplier(@PathVariable String id, @RequestBody SupplierRequest supplierRequest) {
+      try {
+         Optional<Supplier> existingSupplierOpt = supplierService.getSupplierById(id);
+         if (existingSupplierOpt.isPresent()) {
+            Supplier existingSupplier= existingSupplierOpt.get();
+            supplierMapper.updateSupplierFromRequest(supplierRequest, existingSupplier);
+            Supplier updatedSupplier = supplierService.updateSupplier(existingSupplier);
+             SupplierResponse supplierResponse = supplierMapper.toSupplierResponse(updatedSupplier);
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.S0000)
+                            .withMessage("Product updated successfully")
+                            .withPayload(supplierResponse)
+            );
+         } else {
+            return ResponseEntity.ok(
+                    ApiResponse.forStatus(StatusCode.E4004)
+                            .withMessage("Product not found")
+            );
+         }
+      } catch (RuntimeException e) {
+         return ResponseEntity.ok(
+                 ApiResponse.forStatus(StatusCode.E4001)
+                         .withMessage(StatusCode.E4001.getMessage())
+         );
+      } catch (Exception e) {
+         return ResponseEntity.ok(
+                 ApiResponse.forStatus(StatusCode.E5000)
+                         .withMessage("An error occurred while updating the product")
+         );
       }
    }
 }

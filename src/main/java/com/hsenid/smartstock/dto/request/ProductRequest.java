@@ -19,4 +19,5 @@ public class ProductRequest {
     private String supplierFirstName;
     private String supplierLastName;
     private String supplierID;
+    private int QytTObeLowStock;
 }

@@ -4,6 +4,7 @@ import com.hsenid.smartstock.common.ApiResponse;
 import com.hsenid.smartstock.common.StatusCode;
 import com.hsenid.smartstock.dto.ReqResDto;
 import com.hsenid.smartstock.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping
 @CrossOrigin(origins = "http://localhost:4200")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+//    public AuthController(AuthService authService) {
+//        this.authService = authService;
+//    }
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUp(@RequestBody ReqResDto signUpRequest) {

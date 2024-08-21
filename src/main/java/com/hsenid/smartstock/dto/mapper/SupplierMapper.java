@@ -32,6 +32,14 @@ public class SupplierMapper {
 
         return supplier;
     }
-
+    public void updateSupplierFromRequest(SupplierRequest supplierRequest, Supplier supplier) {
+        supplier.setImg(supplierRequest.getImg());
+        supplier.setFirstName(supplierRequest.getFirstName());
+        supplier.setLastName(supplierRequest.getLastName());
+        supplier.setContactPerson(supplierRequest.getContactPerson());
+        supplier.setEmail(supplierRequest.getEmail());
+        supplier.setPhone(supplierRequest.getPhone());
+        supplier.setAddress(supplierRequest.getAddress());
+    }
 }
 

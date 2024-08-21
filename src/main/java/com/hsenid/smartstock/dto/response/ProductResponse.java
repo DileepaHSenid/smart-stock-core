@@ -6,8 +6,8 @@ import java.util.Date;
 
 @Data
 public class ProductResponse {
-    private String img;
     private String id;
+    private String img;
     private String name;
     private String Status;
     private String ShippingId;
@@ -20,5 +20,6 @@ public class ProductResponse {
     private String supplierFirstName;
     private String supplierLastName;
     private String supplierID;
+    private int QytTObeLowStock;
 
 }

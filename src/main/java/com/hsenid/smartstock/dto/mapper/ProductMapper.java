@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class ProductMapper {
     public ProductResponse toProductResponse(Product product) {
         ProductResponse response = new ProductResponse();
+        response.setId(product.getId());
         response.setImg(product.getImg());
         response.setName(product.getName());
         response.setStatus(product.getStatus());
@@ -22,7 +23,8 @@ public class ProductMapper {
         response.setCategoryId(product.getCategoryId());
         response.setSupplierFirstName(product.getSupplierFirstName());
         response.setSupplierLastName(product.getSupplierLastName());
-        response.setShippingId(product.getSupplierID());
+        response.setSupplierID(product.getSupplierID());
+        response.setQytTObeLowStock(product.getQytTObeLowStock());
         return response;
     }
 
@@ -41,6 +43,25 @@ public class ProductMapper {
         product.setSupplierLastName(productRequest.getSupplierLastName());
         product.setLastOrderedDate(productRequest.getLastOrderedDate());
         product.setSupplierID(productRequest.getSupplierID());
+        product.setQytTObeLowStock(productRequest.getQytTObeLowStock());
         return product;
     }
+    public void updateProductFromRequest(ProductRequest productRequest, Product product) {
+        product.setImg(productRequest.getImg());
+        product.setName(productRequest.getName());
+        product.setStatus(productRequest.getStatus());
+        product.setShippingId(productRequest.getShippingId());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setQuantityInStock(productRequest.getQuantityInStock());
+        product.setQuantityToReceive(productRequest.getQuantityToReceive());
+        product.setCategoryId(productRequest.getCategoryId());
+        product.setSupplierFirstName(productRequest.getSupplierFirstName());
+        product.setSupplierLastName(productRequest.getSupplierLastName());
+        product.setLastOrderedDate(productRequest.getLastOrderedDate());
+        product.setSupplierID(productRequest.getSupplierID());
+        product.setQytTObeLowStock(productRequest.getQytTObeLowStock());
+        // Map other fields as needed
+    }
+
 }

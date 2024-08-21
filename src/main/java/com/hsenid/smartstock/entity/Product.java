@@ -14,7 +14,7 @@ public class Product {
     private String id;
     private String img;
     private String name;
-    private String Status;
+    private String status;
     private String ShippingId;
     private String description;
     private double price;
@@ -25,5 +25,5 @@ public class Product {
     private String supplierFirstName;
     private String supplierLastName;
     private String supplierID;
-
+    private int QytTObeLowStock;
 }
