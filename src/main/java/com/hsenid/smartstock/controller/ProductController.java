@@ -78,9 +78,18 @@ public class ProductController {
     @PostMapping("/create")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody ProductRequest productRequest) {
         try {
+            // Check if product with the same name already exists
+            if (productService.productExistsByName(productRequest.getName())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(ApiResponse.forStatus(StatusCode.E4001)
+                                .withMessage("Product with the name '" + productRequest.getName() + "' already exists."));
+            }
+
+            // Proceed to create the product
             Product product = productMapper.toProductRequest(productRequest);
             Product createdProduct = productService.createProduct(product);
             ProductResponse productResponse = productMapper.toProductResponse(createdProduct);
+
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponse.forStatus(StatusCode.S0000)
                             .withMessage(StatusCode.S0000.getMessage())
@@ -97,6 +106,7 @@ public class ProductController {
             );
         }
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable String id) {
@@ -127,9 +137,18 @@ public class ProductController {
             Optional<Product> existingProductOpt = productService.getProductById(id);
             if (existingProductOpt.isPresent()) {
                 Product existingProduct = existingProductOpt.get();
+
+                // Check if another product with the same name already exists
+                if (productService.productExistsByNameAndDifferentId(productRequest.getName(), id)) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(ApiResponse.forStatus(StatusCode.E4001)
+                                    .withMessage("Product with the name '" + productRequest.getName() + "' already exists."));
+                }
+
                 productMapper.updateProductFromRequest(productRequest, existingProduct);
                 Product updatedProduct = productService.updateProduct(existingProduct);
                 ProductResponse productResponse = productMapper.toProductResponse(updatedProduct);
+
                 return ResponseEntity.ok(
                         ApiResponse.forStatus(StatusCode.S0000)
                                 .withMessage("Product updated successfully")
@@ -153,6 +172,7 @@ public class ProductController {
             );
         }
     }
+
 
     @GetMapping("/out-of-stock/count")
     public ResponseEntity<ApiResponse> getOutOfStockProductCount() {

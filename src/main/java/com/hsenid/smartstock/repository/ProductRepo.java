@@ -11,4 +11,6 @@ public interface ProductRepo extends MongoRepository<Product,String> {
     List<Product> findByStatus(String status);
     @Query("SELECT p FROM Product p WHERE p.QuantityInStock < p.QytTObeLowStock")
     List<Product> findLowInStockProducts();
+    boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, String id);
 }
