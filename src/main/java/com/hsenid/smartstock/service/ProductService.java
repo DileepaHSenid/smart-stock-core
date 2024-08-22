@@ -35,6 +35,12 @@ public class ProductService {
 
             return productRepo.save(product);
         }
+    public boolean productExistsByName(String productName) {
+        return productRepo.existsByName(productName);
+    }
+    public boolean productExistsByNameAndDifferentId(String name, String id) {
+        return productRepo.existsByNameAndIdNot(name, id);
+    }
 
     public boolean deleteProduct(String productId) {
         if (productRepo.existsById(productId)) {
