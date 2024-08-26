@@ -1,5 +1,6 @@
 package com.hsenid.smartstock.exception;
 
+import com.hsenid.smartstock.enums.UserRoles;
 import com.hsenid.smartstock.service.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,26 +38,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring security filter chain");
 
-        // Configure HTTP security
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .cors(withDefaults()) // Enable CORS with default settings
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/home", "/signin", "/signup","/orders/**","/stocks/**","/users/**","/suppliers/**", "/products/**","/categories/**").permitAll()
-//                        .requestMatchers("/orders").hasAuthority("ADMIN")
-//                        .requestMatchers("").hasAuthority("MAINTAINER")
-//                        .requestMatchers("/CreateSupplier").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers("/products/create").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers("/CreateProduct").hasAuthority(UserRole.ADMIN.name())
-//                        .requestMatchers(HttpMethod.POST, "/supplier").hasRole("ADMIN")
+                        .requestMatchers("/home", "/signin", "/signup", "/orders/**", "/stocks/**", "/users/**", "/suppliers/**", "/products/**", "/categories/**")
+                        .permitAll() // Allow all users to access these endpoints
+                        .requestMatchers("/users/update/", "/products/update/", "/suppliers/update/")
+                        .hasAuthority(UserRoles.MAINTAINER.name()) // Restrict these endpoints to Maintainers
+                        .anyRequest().hasAuthority(UserRoles.ADMIN.name()) // Other endpoints require Admin role
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless sessions
+                )
+                .authenticationProvider(authenticationProvider()) // Custom authentication provider
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Add custom JWT filter
 
-                        .anyRequest().authenticated())
-                        .sessionManagement(session -> session
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         log.info("Security filter chain configured successfully");
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

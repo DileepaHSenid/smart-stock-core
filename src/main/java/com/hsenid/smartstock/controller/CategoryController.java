@@ -6,6 +6,7 @@ import com.hsenid.smartstock.entity.Category;
 import com.hsenid.smartstock.entity.SubCategory;
 import com.hsenid.smartstock.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,11 @@ public class CategoryController {
                             .withMessage(StatusCode.S0000.getMessage())
                             .withPayload(createdCategory)
             );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    (ApiResponse.forStatus(StatusCode.E4001))
+                            .withMessage("Category already exists")
+            );
         } catch (Exception e) {
             return ResponseEntity.ok(
                     ApiResponse.forStatus(StatusCode.E5000)
@@ -38,29 +44,8 @@ public class CategoryController {
         }
     }
 
-    // Endpoint to add a subcategory to any level (category or subcategory)
-    @PostMapping("/{parentId}/subcategories")
-    public ResponseEntity<ApiResponse> addSubCategory(@PathVariable String parentId, @RequestBody SubCategory subCategory) {
-        try {
-            SubCategory createdSubCategory = categoryService.addSubCategory(parentId, subCategory);
-            if (createdSubCategory != null) {
-                return ResponseEntity.ok(
-                        ApiResponse.forStatus(StatusCode.S0000)
-                                .withMessage(StatusCode.S0000.getMessage())
-                                .withPayload(createdSubCategory)
-                );
-            }
-            return ResponseEntity.ok(
-                    ApiResponse.forStatus(StatusCode.E4004)
-                            .withMessage(StatusCode.E4004.getMessage())
-            );
-        } catch (Exception e) {
-            return ResponseEntity.ok(
-                    ApiResponse.forStatus(StatusCode.E5000)
-                            .withMessage(StatusCode.E5000.getMessage())
-            );
-        }
-    }
+
+
 
     // Endpoint to get a category by its ID
     @GetMapping("/{id}")
@@ -87,30 +72,6 @@ public class CategoryController {
         }
     }
 
-    // Endpoint to get a subcategory by its ID
-    @GetMapping("/subcategories/{id}")
-    public ResponseEntity<ApiResponse> getSubCategoryById(@PathVariable String id) {
-        try {
-            Optional<SubCategory> subCategoryOpt = categoryService.getSubCategoryById(id);
-            return subCategoryOpt.map(subCategory ->
-                    ResponseEntity.ok(
-                            ApiResponse.forStatus(StatusCode.S0000)
-                                    .withMessage(StatusCode.S0000.getMessage())
-                                    .withPayload(subCategory)
-                    )
-            ).orElseGet(() ->
-                    ResponseEntity.ok(
-                            ApiResponse.forStatus(StatusCode.E4004)
-                                    .withMessage(StatusCode.E4004.getMessage())
-                    )
-            );
-        } catch (Exception e) {
-            return ResponseEntity.ok(
-                    ApiResponse.forStatus(StatusCode.E5000)
-                            .withMessage(StatusCode.E5000.getMessage())
-            );
-        }
-    }
 
     // Endpoint to get all categories
     @GetMapping
