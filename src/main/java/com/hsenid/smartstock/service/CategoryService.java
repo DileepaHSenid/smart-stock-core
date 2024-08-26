@@ -22,6 +22,9 @@ public class CategoryService {
 
     // Add a new main category
     public Category addCategory(Category category) {
+        if (categoryRepo.existsByName(category.getName())) {
+            throw new IllegalArgumentException("Category with name " + category.getName() + " already exists.");
+        }
         return categoryRepo.save(category);
     }
 
